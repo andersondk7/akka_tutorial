@@ -1,7 +1,7 @@
 # Overview
-This project is broken down into a number of steps, each step demonstrates a concept of akka actors.  Each step is in its own package with a `Driver` that is runnable that demonstrates the step in action.
+This project is broken down into a number of steps, each step demonstrates a concept of akka actors.  Each step is in its own package with a unit test to demonstrate the actor(s) in action.
 
-With the exception of step 1 (which really does nothing...) provide a unit test to show compliance.  The accompaning project uses org.scalatest.FunSpec.
+With the exception of step 1 (which really does nothing...) provide a unit test to show compliance.  The accompanying project uses `org.scalatest.FunSpec`.
 
 # Steps
 ## Step 1 -- basic actor
