@@ -3,7 +3,7 @@ This project is broken down into a number of steps, each step demonstrates a con
 
 With the exception of step 1 (which really does nothing...) provide a unit test to show compliance.  The accompaning project uses org.scalatest.FunSpec.
 
-#Steps
+# Steps
 ## Step 1 -- basic actor
 Create an actor that receives a message with some text and prints that text to the console.  The actor can just print unexpected messages to the console.
 ## Step 2 -- return to sender
