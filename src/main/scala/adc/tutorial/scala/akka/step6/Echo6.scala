@@ -1,9 +1,10 @@
 package adc.tutorial.scala.akka.step6
 
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props, Status}
 import akka.pattern.pipe
 
+import scala.util.Failure
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -26,6 +27,8 @@ class Echo6(askedBy: ActorRef, storageService: StorageService) extends Actor wit
     // -------------------
     case Message(content) => pipe(storageService.postContent(content)) to self
 
+    case ForceFailure => pipe(storageService.forceFailure()) to self
+
     case StorageSizeRequest => pipe(storageService.storageSize) to self
 
     // -------------------
@@ -41,8 +44,13 @@ class Echo6(askedBy: ActorRef, storageService: StorageService) extends Actor wit
       context.parent ! GoodMessage
       context.stop(self) // we are done here
 
-    case pe: PersistenceException =>
-      throw FailedMessageException(askedBy, pe)
+    case failure: Status.Failure =>
+      failure.cause match {
+        case pe: PersistenceException =>
+          log.info(s"${self.path} received PersistenceException, throwing FailedMessage with askedBy: ${askedBy.path}")
+          throw FailedMessageException(askedBy, pe)
+      }
+
   }
 }
 
@@ -54,6 +62,7 @@ object Echo6 {
   // ---------------------------------
   case object StorageSizeRequest
   case class Message(content: String)
+  case object ForceFailure
 
   // ---------------------------------
   // -- responses --
