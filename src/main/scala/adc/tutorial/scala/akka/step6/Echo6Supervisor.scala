@@ -21,7 +21,7 @@ class Echo6Supervisor(service: StorageService) extends Actor with ActorLogging {
     case fm: FailedMessageException =>
       val message = Message(s"could not process message because ${fm.reason.getMessage}")
       log.info(message.content, fm)
-      fm.sender ! message
+      fm.askedBy ! message
       badMessages = badMessages + 1
       Stop
 

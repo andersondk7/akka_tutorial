@@ -5,6 +5,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import Echo6.{ContentWritten, StorageLength}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 class StorageService(val fileName: String) {
@@ -34,6 +35,10 @@ class StorageService(val fileName: String) {
     withFile[Boolean](fileName) { f => {
       f.delete()
     }}
+  }
+
+  def forceFailure(): Future[Unit] = Future {
+    throw PersistenceException(destination=fileName, reason=new Exception("expected"))
   }
 }
 

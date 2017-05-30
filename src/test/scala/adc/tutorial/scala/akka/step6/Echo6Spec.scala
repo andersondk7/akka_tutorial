@@ -1,7 +1,7 @@
 package adc.tutorial.scala.akka.step6
 
 
-import adc.tutorial.scala.akka.step6.Echo6.{ContentWritten, Message, StorageLength, StorageSizeRequest}
+import adc.tutorial.scala.akka.step6.Echo6._
 import adc.tutorial.scala.akka.step6.Echo6Supervisor.{CountReport, Counts}
 import akka.actor.ActorSystem
 import akka.pattern.ask
@@ -68,6 +68,30 @@ class Echo6Spec extends FunSpec with Matchers with BeforeAndAfterAll {
       val messages: List[Any] = List(
         Message("text message")
         , Message("hash tag message")
+        , Message("im message")
+        , "forgot to wrap content"
+        , Message("standard email message")
+        , 42 // in this case, not the answer to everything...
+        , Message("old school snail mail message")
+      )
+      val goodCount = messages.count(_.isInstanceOf[Message])
+      val badCount = messages.size - goodCount
+      val messageCalls: Future[List[Any]] = Future.sequence(messages.map(m => echo ? m))
+      Await.result(messageCalls, timeout.duration*messages.size) // don't care what we got back in this test
+      val countCall = echo ? CountReport
+      val counts = Await.result(countCall.mapTo[Counts], timeout.duration)
+      counts.good shouldBe goodCount
+      counts.bad shouldBe badCount
+    }
+    it("should count a failure in the service as a 'bad message'") {
+      val fileName = "/tmp/echo6.5.txt"
+      val service = new StorageService(fileName)
+      reset(service)
+      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.5")
+      val messages: List[Any] = List(
+        Message("text message")
+        , Message("hash tag message")
+        , ForceFailure
         , Message("im message")
         , "forgot to wrap content"
         , Message("standard email message")
