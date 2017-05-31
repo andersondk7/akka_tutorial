@@ -1,4 +1,4 @@
-package adc.tutorial.scala.akka.step6
+package adc.tutorial.scala.akka.step6a
 
 
 import akka.actor.ActorSystem
@@ -10,28 +10,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class Echo6Spec extends FunSpec with Matchers with BeforeAndAfterAll {
-  import Echo6._
-  import Echo6Supervisor._
+class Echo6aSpec extends FunSpec with Matchers with BeforeAndAfterAll {
+  import Echo6a._
+  import Echo6aSupervisor._
   implicit val timeout = Timeout(.5.seconds)
-  private val system = ActorSystem("step6")
+  private val system = ActorSystem("step6a")
 
-  describe("echo6") {
+  describe("echo6a") {
     it("should return recognized message") {
-      val fileName = "/tmp/echo6.1.txt"
+      val fileName = "/tmp/echo6a.1.txt"
       val service = new StorageService(fileName)
       reset(service)
-      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.1")
+      val echo = system.actorOf(Echo6aSupervisor.props(service), "supervisor6a.1")
       val sentContent = "its in a bottle"
       val call = echo ? Message(sentContent)
       val received = Await.result(call.mapTo[ContentWritten], timeout.duration)
       received.size shouldBe sentContent.length
     }
     it("should count storage size") {
-      val fileName = "/tmp/echo6.2.txt"
+      val fileName = "/tmp/echo6a.2.txt"
       val service = new StorageService(fileName)
       reset(service)
-      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.2")
+      val echo = system.actorOf(Echo6aSupervisor.props(service), "supervisor6a.2")
       val messages = List(
         "text message"
         , "hash tag message"
@@ -47,10 +47,10 @@ class Echo6Spec extends FunSpec with Matchers with BeforeAndAfterAll {
       storageLength.size shouldBe totalWritten
     }
     it("should receive different message an unknown message") {
-      val fileName = "/tmp/echo6.3.txt"
+      val fileName = "/tmp/echo6a.3.txt"
       val service = new StorageService(fileName)
       reset(service)
-      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.3")
+      val echo = system.actorOf(Echo6aSupervisor.props(service), "supervisor6a.3")
       val sentContent = "its in a bottle"
       val call = echo ? sentContent
       val received = Await.result(call.mapTo[Message], timeout.duration)
@@ -61,10 +61,10 @@ class Echo6Spec extends FunSpec with Matchers with BeforeAndAfterAll {
       storageLength.size shouldBe 0
     }
     it("should count good and bad messages") {
-      val fileName = "/tmp/echo6.4.txt"
+      val fileName = "/tmp/echo6a.4.txt"
       val service = new StorageService(fileName)
       reset(service)
-      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.4")
+      val echo = system.actorOf(Echo6aSupervisor.props(service), "supervisor6a.4")
       val messages: List[Any] = List(
         Message("text message")
         , Message("hash tag message")
@@ -84,10 +84,10 @@ class Echo6Spec extends FunSpec with Matchers with BeforeAndAfterAll {
       counts.bad shouldBe badCount
     }
     it("should count a failure in the service as a 'bad message'") {
-      val fileName = "/tmp/echo6.5.txt"
+      val fileName = "/tmp/echo6a.5.txt"
       val service = new StorageService(fileName)
       reset(service)
-      val echo = system.actorOf(Echo6Supervisor.props(service), "supervisor6.5")
+      val echo = system.actorOf(Echo6aSupervisor.props(service), "supervisor6a.5")
       val messages: List[Any] = List(
         Message("text message")
         , Message("hash tag message")
