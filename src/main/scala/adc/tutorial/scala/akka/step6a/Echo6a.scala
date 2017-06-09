@@ -1,4 +1,4 @@
-package adc.tutorial.scala.akka.step6
+package adc.tutorial.scala.akka.step6a
 
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Status}
@@ -11,9 +11,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @param askedBy who is making the request
   * @param storageService blocking service that implements request
   */
-class Echo6(askedBy: ActorRef, storageService: StorageService) extends Actor with ActorLogging {
-  import Echo6._
-  import Echo6Supervisor._
+class Echo6a(askedBy: ActorRef, storageService: StorageService) extends Actor with ActorLogging {
+  import Echo6a._
+  import Echo6aSupervisor._
 
   override def unhandled(message: Any): Unit = {
     throw UnknownMessageException(sender(), message.getClass.getName)
@@ -53,8 +53,8 @@ class Echo6(askedBy: ActorRef, storageService: StorageService) extends Actor wit
   }
 }
 
-object Echo6 {
-  def props(askedBy: ActorRef, storageService: StorageService): Props = Props(classOf[Echo6], askedBy, storageService)
+object Echo6a {
+  def props(askedBy: ActorRef, storageService: StorageService): Props = Props(classOf[Echo6a], askedBy, storageService)
 
   // ---------------------------------
   // -- requests --
