@@ -21,4 +21,5 @@ Augment the actor system from step 5 to keep track of how many sucessful and fai
 Replace the action in the worker from step 5 to do a blocking call when a message is received.  For this exercise, when a message is received, write the message contents to a file (rather than a database or web service for example) and return the number of bytes written.  Also include a way to determine the total number of bytes written as well as then number of successful and failed messages handled. Do not write unknown messages to the file but do throw exception on an unknown message.  Remember that actors should not block!  You may want to consider creating a service to handle the blocking calls (ie. performs the call in a Future) and have the actor delegate to and respond from the service.
 ## Step6 a -- non-blocking w/become
 Repeat step 6 but this time don't change mutable variables within the actor to track state, but change the behavior of the actor based on state.  This is similar to step 5a but the changes are in the supervisor (where the state is held)
-
+## Step 7 
+Repeat step 6a but this time let's be more functional.  Have the service always return a value (that is don't throw exceptions) by returning a Try[R] where R is the expected result.  We reserve thowing an exception to failures in actors rather than failures in services.
